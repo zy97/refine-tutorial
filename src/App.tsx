@@ -24,7 +24,7 @@ import routerBindings, {
 import dataProvider from "@refinedev/simple-rest";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import { Header } from "./components/header";
-
+import { AntdInferencer } from "@refinedev/inferencer/antd";
 function App() {
   return (
     <BrowserRouter>
@@ -39,9 +39,42 @@ function App() {
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,
             }}
+            resources={[
+              {
+                name: "blog_posts",
+                list: "/blog-posts",
+                show: "/blog-posts/show/:id",
+                create: "/blog-posts/create",
+                edit: "/blog-posts/edit/:id",
+              },
+            ]}
           >
             <Routes>
-              <Route index element={<WelcomePage />} />
+              <Route
+                element={
+                  <ThemedLayoutV2>
+                    <Outlet />
+                  </ThemedLayoutV2>
+                }
+              >
+                <Route index element={<NavigateToResource resource="blog_posts" />} />
+                <Route path="blog-posts">
+                  <Route index element={<AntdInferencer />} />
+                  <Route
+                    path="show/:id"
+                    element={<AntdInferencer />}
+                  />
+                  <Route
+                    path="edit/:id"
+                    element={<AntdInferencer />}
+                  />
+                  <Route
+                    path="create"
+                    element={<AntdInferencer />}
+                  />
+                </Route>
+                <Route path="*" element={<ErrorComponent />} />
+              </Route>
             </Routes>
             <RefineKbar />
             <UnsavedChangesNotifier />
